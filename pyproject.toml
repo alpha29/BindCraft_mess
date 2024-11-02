@@ -16,6 +16,11 @@ jax = "^0.4.35"
 pyrosetta-installer = "^0.1.2"
 
 
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+isort = "^5.13.2"
+ruff = "^0.7.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
