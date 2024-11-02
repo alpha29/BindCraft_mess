@@ -1,0 +1,68 @@
+# IDE artifacts #
+#################
+.idea/
+.vscode/
+*sublime*
+
+
+# Python     #
+##############
+*.py[cod]
+__pycache__/
+.cache/
+.mypy_cache/
+bindcraft.egg-info/
+env/
+.pytest_cache/
+
+
+# Testing / coverage reports #
+##############################
+reports/
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+bindcraft-coverage.xml
+
+
+# Distribution / packaging #
+############################
+build/
+dist/
+*.zip
+*.tar.gz
+*.sql.gz
+*.bak
+
+
+# Sphinx documentation #
+########################
+docs/_build/
+
+
+# Jupyter artifacts #
+#####################
+bindcraft/notebooks/.ipynb_checkpoints/
+
+
+# assorted backups  #
+#####################
+backups/
+tmp/
+db_dumps/*.json
+
+
+# Other stuff       #
+#####################
+*.sqlite3
+.env*
+!.env.example
+
+# params            #
+#####################
+params/*.npz
+params/LICENSE
