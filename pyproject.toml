@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "bindcraft"
+version = "0.1.0"
+description = ""
+authors = ["cbrown <cbrown@alpha29.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+colabdesign = {git = "https://github.com/alpha29/ColabDesign.git"}
+numpy = "^1.26.4"
+scipy = "^1.14.1"
+biopython = "^1.84"
+matplotlib = "^3.9.2"
+jax = "^0.4.35"
+pyrosetta-installer = "^0.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
