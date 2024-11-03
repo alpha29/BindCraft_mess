@@ -23,11 +23,11 @@ from bindcraft.logger import logger
 BINDCRAFT_HOME = os.getenv("BINDCRAFT_HOME", os.getcwd())
 
 def set_up_pyrosetta():
-    import pyrosettacolabsetup
+    logger.info("Setting up pyrosetta...")
+    import pyrosetta_installer
+    pyrosetta_installer.install_pyrosetta()
+    logger.info("Done.")
 
-    pyrosettacolabsetup.install_pyrosetta(
-        serialization=True, cache_wheel_on_google_drive=False
-    )
 
 
 """

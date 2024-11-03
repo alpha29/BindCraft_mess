@@ -1261,17 +1261,6 @@ files = [
 ]
 
 [[package]]
-name = "pyrosettacolabsetup"
-version = "1.0.9"
-description = "Mounts Google Drive for PyRosetta use in Google Colaboratory"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyrosettacolabsetup-1.0.9-py3-none-any.whl", hash = "sha256:90a3c75fe8ad267bb7c420f3c860eda2cc0bd0bc3bde792b5c8084a0ccfa3da6"},
-    {file = "pyrosettacolabsetup-1.0.9.tar.gz", hash = "sha256:9be1518aa28fe6d140e2f98993a89ff4ce7c29ddb041dbe58597fa114761a9be"},
-]
-
-[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
@@ -1588,4 +1577,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "948fb4779589b6e1fbd346b50ed75977a2d31e9d060a7c36afe43ff4eaf04587"
+content-hash = "db55af3971db89ac264a5e4d9ac55878598bd0bb4022fab9e147d373eb20d284"
