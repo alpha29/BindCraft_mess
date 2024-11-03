@@ -45,6 +45,7 @@ LOGURU_HANDLER = {
 loguru_logger.configure(handlers=[LOGURU_HANDLER])
 
 logger = loguru_logger
+logger.add("bindcraft.log", level=LOGURU_LOG_LEVEL, rotation="1 day", compression="zip", serialize=True)
 
 # ...Look, at this point I'm just guessing
 # _atexit.register(logger.remove)
