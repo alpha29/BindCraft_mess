@@ -12,7 +12,7 @@ numpy = "^1.26.4"
 scipy = "^1.14.1"
 biopython = "^1.84"
 matplotlib = "^3.9.2"
-jax = "^0.4.35"
+jax = {extras = ["cuda"], version = "^0.4.35"}
 pyrosetta-installer = "^0.1.2"
 loguru = "^0.7.2"
 typer = "^0.12.5"
