@@ -24,6 +24,7 @@ from .biopython_utils import (calc_ss_percentage, calculate_clash_score,
 from .generic_utils import update_failures
 from .pyrosetta_utils import align_pdbs, pr_relax
 
+from bindcraft.logger import logger
 
 # hallucinate a binder
 def binder_hallucination(
@@ -170,7 +171,7 @@ def binder_hallucination(
 
     elif advanced_settings["design_algorithm"] == "4stage":
         # initial logits to prescreen trajectory
-        print("Stage 1: Test Logits")
+        logger.info("Stage 1: Test Logits")
         af_model.design_logits(
             iters=50,
             e_soft=0.9,
@@ -185,7 +186,7 @@ def binder_hallucination(
 
         # if best iteration has high enough confidence then continue
         if initial_plddt > 0.65:
-            print("Initial trajectory pLDDT good, continuing: " + str(initial_plddt))
+            logger.info("Initial trajectory pLDDT good, continuing: " + str(initial_plddt))
             if advanced_settings["optimise_beta"]:
                 # temporarily dump model to assess secondary structure
                 af_model.save_pdb(model_pdb_path)
@@ -205,12 +206,12 @@ def binder_hallucination(
                     af_model.set_opt(
                         num_recycles=advanced_settings["optimise_beta_recycles_design"]
                     )
-                    print("Beta sheeted trajectory detected, optimising settings")
+                    logger.info("Beta sheeted trajectory detected, optimising settings")
 
             # how many logit iterations left
             logits_iter = advanced_settings["soft_iterations"] - 50
             if logits_iter > 0:
-                print("Stage 1: Additional Logits Optimisation")
+                logger.info("Stage 1: Additional Logits Optimisation")
                 af_model.clear_best()
                 af_model.design_logits(
                     iters=logits_iter,
@@ -223,13 +224,13 @@ def binder_hallucination(
                 )
                 af_model._tmp["seq_logits"] = af_model.aux["seq"]["logits"]
                 logit_plddt = get_best_plddt(af_model, length)
-                print("Optimised logit trajectory pLDDT: " + str(logit_plddt))
+                logger.info("Optimised logit trajectory pLDDT: " + str(logit_plddt))
             else:
                 logit_plddt = initial_plddt
 
             # perform softmax trajectory design
             if advanced_settings["temporary_iterations"] > 0:
-                print("Stage 2: Softmax Optimisation")
+                logger.info("Stage 2: Softmax Optimisation")
                 af_model.clear_best()
                 af_model.design_soft(
                     advanced_settings["temporary_iterations"],
@@ -246,12 +247,12 @@ def binder_hallucination(
 
             # perform one hot encoding
             if softmax_plddt > 0.65:
-                print(
+                logger.info(
                     "Softmax trajectory pLDDT good, continuing: " + str(softmax_plddt)
                 )
                 if advanced_settings["hard_iterations"] > 0:
                     af_model.clear_best()
-                    print("Stage 3: One-hot Optimisation")
+                    logger.info("Stage 3: One-hot Optimisation")
                     af_model.design_hard(
                         advanced_settings["hard_iterations"],
                         temp=1e-2,
@@ -266,12 +267,12 @@ def binder_hallucination(
 
                 if onehot_plddt > 0.65:
                     # perform greedy mutation optimisation
-                    print(
+                    logger.info(
                         "One-hot trajectory pLDDT good, continuing: "
                         + str(onehot_plddt)
                     )
                     if advanced_settings["greedy_iterations"] > 0:
-                        print("Stage 4: PSSM Semigreedy Optimisation")
+                        logger.info("Stage 4: PSSM Semigreedy Optimisation")
                         af_model.clear_best()
                         af_model.design_pssm_semigreedy(
                             soft_iters=0,
@@ -286,24 +287,24 @@ def binder_hallucination(
 
                 else:
                     update_failures(failure_csv, "Trajectory_one-hot_pLDDT")
-                    print(
+                    logger.info(
                         "One-hot trajectory pLDDT too low to continue: "
                         + str(onehot_plddt)
                     )
 
             else:
                 update_failures(failure_csv, "Trajectory_softmax_pLDDT")
-                print(
+                logger.info(
                     "Softmax trajectory pLDDT too low to continue: "
                     + str(softmax_plddt)
                 )
 
         else:
             update_failures(failure_csv, "Trajectory_logits_pLDDT")
-            print("Initial trajectory pLDDT too low to continue: " + str(initial_plddt))
+            logger.info("Initial trajectory pLDDT too low to continue: " + str(initial_plddt))
 
     else:
-        print("ERROR: No valid design model selected")
+        logger.info("ERROR: No valid design model selected")
         exit()
         return
 
@@ -321,17 +322,17 @@ def binder_hallucination(
     if ca_clashes > 0:
         af_model.aux["log"]["terminate"] = "Clashing"
         update_failures(failure_csv, "Trajectory_Clashes")
-        print("Severe clashes detected, skipping analysis and MPNN optimisation")
-        print("")
+        logger.info("Severe clashes detected, skipping analysis and MPNN optimisation")
+        logger.info("")
     else:
         # check if low quality prediction
         if final_plddt < 0.7:
             af_model.aux["log"]["terminate"] = "LowConfidence"
             update_failures(failure_csv, "Trajectory_final_pLDDT")
-            print(
+            logger.info(
                 "Trajectory starting confidence low, skipping analysis and MPNN optimisation"
             )
-            print("")
+            logger.info("")
         else:
             # does it have enough contacts to consider?
             binder_contacts = hotspot_residues(model_pdb_path)
@@ -341,14 +342,14 @@ def binder_hallucination(
             if binder_contacts_n < 3:
                 af_model.aux["log"]["terminate"] = "LowConfidence"
                 update_failures(failure_csv, "Trajectory_Contacts")
-                print(
+                logger.info(
                     "Too few contacts at the interface, skipping analysis and MPNN optimisation"
                 )
-                print("")
+                logger.info("")
             else:
                 # phew, trajectory is okay! We can continue
                 af_model.aux["log"]["terminate"] = ""
-                print("Trajectory successful, final pLDDT: " + str(final_plddt))
+                logger.info("Trajectory successful, final pLDDT: " + str(final_plddt))
 
     # move low quality prediction:
     if af_model.aux["log"]["terminate"] != "":
@@ -561,7 +562,7 @@ def mpnn_gen_sequence(
 
     if advanced_settings["mpnn_fix_interface"]:
         fixed_positions = "A," + trajectory_interface_residues
-        print("Fixing interface residues: " + trajectory_interface_residues)
+        logger.info("Fixing interface residues: " + trajectory_interface_residues)
     else:
         fixed_positions = "A"
 

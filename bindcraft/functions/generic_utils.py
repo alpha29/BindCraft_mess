@@ -11,6 +11,7 @@ import jax
 import numpy as np
 import pandas as pd
 
+from bindcraft.logger import logger
 
 # Define labels for dataframes
 def generate_dataframe_labels():
@@ -253,7 +254,7 @@ def check_n_trajectories(design_paths, advanced_settings):
         advanced_settings["max_trajectories"] is not False
         and len(n_trajectories) >= advanced_settings["max_trajectories"]
     ):
-        print(
+        logger.info(
             f"Target number of {str(len(n_trajectories))} trajectories reached, stopping execution..."
         )
         return True
@@ -276,7 +277,7 @@ def check_accepted_designs(
     ]
 
     if len(accepted_binders) >= target_settings["number_of_final_designs"]:
-        print(
+        logger.info(
             f"Target number {str(len(accepted_binders))} of designs reached! Reranking..."
         )
 
@@ -352,12 +353,12 @@ def check_jax_gpu():
     has_gpu = any(device.platform == "gpu" for device in devices)
 
     if not has_gpu:
-        print("No GPU device found, terminating.")
+        logger.info("No GPU device found, terminating.")
         exit()
     else:
-        print("Available GPUs:")
+        logger.info("Available GPUs:")
         for i, device in enumerate(devices):
-            print(f"{device.device_kind}{i + 1}: {device.platform}")
+            logger.info(f"{device.device_kind}{i + 1}: {device.platform}")
 
 
 # check all input files being passed
@@ -367,7 +368,7 @@ def perform_input_check(args):
 
     # Ensure settings file is provided
     if not args.settings:
-        print("Error: --settings is required.")
+        logger.info("Error: --settings is required.")
         exit()
 
     # Set default filters.json path if not provided
@@ -464,7 +465,7 @@ def zip_and_empty_folder(folder_path, extension):
                 zipf.write(file_path, arcname=file)
                 # Remove the file after adding it to the zip
                 os.remove(file_path)
-    print(f"Files in folder '{folder_path}' have been zipped and removed.")
+    logger.info(f"Files in folder '{folder_path}' have been zipped and removed.")
 
 
 # calculate averages for statistics
