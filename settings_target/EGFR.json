@@ -1,0 +1,9 @@
+{
+    "design_path": "/home/cbrown/workspace/BindCraft/out/",
+    "binder_name": "PDL1",
+    "starting_pdb": "/home/cbrown/workspace/6aru_final_chain_A_domain_3.pdb",
+    "chains": "A",
+    "target_hotspot_residues": "",
+    "lengths": [40, 100],
+    "number_of_final_designs": 1
+}
