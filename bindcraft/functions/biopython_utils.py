@@ -5,7 +5,7 @@
 from collections import defaultdict
 
 import numpy as np
-from Bio.PDB import (DSSP, PDBParser, Selection, Superimposer)
+from Bio.PDB import DSSP, PDBParser, Selection, Superimposer
 from Bio.PDB.Polypeptide import is_aa
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from scipy.spatial import cKDTree
