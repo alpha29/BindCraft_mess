@@ -20,6 +20,7 @@ from bindcraft.logger import logger
 #TIMEOUT = int(os.environ.get("TIMEOUT", 720))
 #logger.info(f"Using GPU {GPU}; TIMEOUT {TIMEOUT}")
 
+BINDCRAFT_HOME = os.getenv("BINDCRAFT_HOME", os.getcwd())
 
 def set_up_pyrosetta():
     import pyrosettacolabsetup
@@ -55,17 +56,18 @@ image = (
 """
 
 
-def bindcraft(
-    design_path,
-    binder_name,
-    pdb_str,
-    chains,
-    target_hotspot_residues,
-    lengths,
-    number_of_final_designs,
-    filter_option="Default",
-    advanced_option="Default",
-):
+#def bindcraft(
+#    design_path,
+#    binder_name,
+#    pdb_str,
+#    chains,
+#    target_hotspot_residues,
+#    lengths,
+#    number_of_final_designs,
+#    filter_option="Default",
+#    advanced_option="Default",
+#):
+def bindcraft(target_settings_path: str, filter_option: str = "Default", advanced_option: str = "Default"):
     import json
     import os
     import shutil
@@ -105,45 +107,45 @@ def bindcraft(
         validate_design_sequence,
     )
 
-    starting_pdb = f"/tmp/bindcraft/{binder_name}.pdb"
-    Path(starting_pdb).parent.mkdir(parents=True, exist_ok=True)
-    open(starting_pdb, "w").write(pdb_str)
+    #starting_pdb = f"/tmp/bindcraft/{binder_name}.pdb"
+    #Path(starting_pdb).parent.mkdir(parents=True, exist_ok=True)
+    #open(starting_pdb, "w").write(pdb_str)
 
-    settings = {
-        "design_path": design_path,
-        "binder_name": binder_name,
-        "starting_pdb": starting_pdb,
-        "chains": chains,
-        "target_hotspot_residues": target_hotspot_residues,
-        "lengths": lengths,
-        "number_of_final_designs": number_of_final_designs,
-    }
+    #settings = {
+    #    "design_path": design_path,
+    #    "binder_name": binder_name,
+    #    "starting_pdb": starting_pdb,
+    #    "chains": chains,
+    #    "target_hotspot_residues": target_hotspot_residues,
+    #    "lengths": lengths,
+    #    "number_of_final_designs": number_of_final_designs,
+    #}
 
-    target_settings_path = f"/root/bindcraft/settings_target/{binder_name}.json"
+    #target_settings_path = f"{BINDCRAFT_HOME}/settings_target/{binder_name}.json"
 
-    with open(target_settings_path, "w") as f:
-        json.dump(settings, f, indent=4)
+    #with open(target_settings_path, "w") as f:
+    #    json.dump(settings, f, indent=4)
 
     if filter_option == "Default":
-        filter_settings_path = "/root/bindcraft/settings_filters/default_filters.json"
+        filter_settings_path = f"{BINDCRAFT_HOME}/settings_filters/default_filters.json"
     elif filter_option == "None":
-        filter_settings_path = "/root/bindcraft/settings_filters/no_filters.json"
+        filter_settings_path = f"{BINDCRAFT_HOME}/settings_filters/no_filters.json"
     elif filter_option == "Peptide":
-        filter_settings_path = "/root/bindcraft/settings_filters/filters_peptides.json"
+        filter_settings_path = f"{BINDCRAFT_HOME}/settings_filters/filters_peptides.json"
     else:
         raise ValueError("Unsupported filter type")
 
     if advanced_option == "Default":
         advanced_settings_path = (
-            "/root/bindcraft/settings_advanced/4stage_multimer.json"
+            f"{BINDCRAFT_HOME}/settings_advanced/4stage_multimer.json"
         )
     elif advanced_option == "Beta-sheet":
         advanced_settings_path = (
-            "/root/bindcraft/settings_advanced/4stage_multimer_betasheet.json"
+            f"{BINDCRAFT_HOME}/settings_advanced/4stage_multimer_betasheet.json"
         )
     elif advanced_option == "Peptide":
         advanced_settings_path = (
-            "/root/bindcraft/settings_advanced/4stage_multimer_peptides.json"
+            f"{BINDCRAFT_HOME}/settings_advanced/4stage_multimer_peptides.json"
         )
     else:
         raise ValueError("Unsupported protocol")
@@ -171,9 +173,9 @@ def bindcraft(
     filters_file = os.path.basename(filters_path).split(".")[0]
     advanced_file = os.path.basename(advanced_path).split(".")[0]
 
-    advanced_settings["af_params_dir"] = "/root/bindcraft/params/"
-    advanced_settings["dssp_path"] = "/root/bindcraft/functions/dssp"
-    advanced_settings["dalphaball_path"] = "/root/bindcraft/functions/DAlphaBall.gcc"
+    advanced_settings["af_params_dir"] = "/home/cbrown/workspace/params/"
+    advanced_settings["dssp_path"] = f"{BINDCRAFT_HOME}/bin/dssp"
+    advanced_settings["dalphaball_path"] = f"{BINDCRAFT_HOME}/bin/DAlphaBall.gcc"
 
     ### load AF2 model settings
     design_models, prediction_models, multimer_validation = load_af2_models(
@@ -1013,16 +1015,16 @@ def bindcraft(
         for out_file in Path(out_dir).glob("**/*.*")
     ]
 
-
-def main(
-    input_pdb_path: str,
-    chains: str = "A",
-    target_hotspot_residues: str = "",
-    lengths: str = "40,100",
-    number_of_final_designs: int = 1,
-    binder_name: str = None,
-    out_dir: str = "./out/bindcraft",
-):
+#def main(
+#    input_pdb_path: str,
+#    chains: str = "A",
+#    target_hotspot_residues: str = "",
+#    lengths: str = "40,100",
+#    number_of_final_designs: int = 1,
+#    binder_name: str = None,
+#    out_dir: str = "./out/bindcraft",
+#):
+def main(target_settings_path: str = f"{BINDCRAFT_HOME}/settings_target/PDL1.json"):
     """
     target_hotspot_residues: What positions to target in your protein of interest?
     For example 1,2-10 or chain specific A1-10,B1-20 or entire chains A.
@@ -1032,20 +1034,21 @@ def main(
 
     today = datetime.now().strftime("%Y%m%d%H%M")[2:]
 
-    pdb_str = open(input_pdb_path).read()
-    binder_name = binder_name or Path(input_pdb_path).stem
-    design_path = f"/tmp/BindCraft/{binder_name}/"
-    lengths = [int(i) for i in lengths.split(",")]
+    #pdb_str = open(input_pdb_path).read()
+    #binder_name = binder_name or Path(input_pdb_path).stem
+    #design_path = f"/tmp/BindCraft/{binder_name}/"
+    #lengths = [int(i) for i in lengths.split(",")]
 
-    outputs = bindcraft(
-        design_path=design_path,
-        binder_name=binder_name,
-        pdb_str=pdb_str,
-        chains=chains,
-        target_hotspot_residues=target_hotspot_residues,
-        lengths=lengths,
-        number_of_final_designs=number_of_final_designs,
-    )
+    #outputs = bindcraft(
+    #    design_path=design_path,
+    #    binder_name=binder_name,
+    #    pdb_str=pdb_str,
+    #    chains=chains,
+    #    target_hotspot_residues=target_hotspot_residues,
+    #    lengths=lengths,
+    #    number_of_final_designs=number_of_final_designs,
+    #)
+    outputs = bindcraft(target_settings_path=target_settings_path)
 
     for out_file, out_content in outputs:
         (Path(out_dir) / today / Path(out_file)).parent.mkdir(
