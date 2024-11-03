@@ -2,7 +2,7 @@ import os
 import typer
 
 from bindcraft import __version__
-from bindcraft.runner import main, set_up_pyrosetta
+from bindcraft.runner import main as bc_main, set_up_pyrosetta
 
 app = typer.Typer()
 
@@ -24,7 +24,7 @@ def run():
     Run bindcraft-based binder design.
     """
     typer.echo("Running...")
-    main()
+    bc_main()
     typer.echo("Done.")
 
 @app.command()
