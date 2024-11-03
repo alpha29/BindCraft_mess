@@ -126,6 +126,8 @@ def bindcraft(target_settings_path: str, filter_option: str = "Default", advance
     #with open(target_settings_path, "w") as f:
     #    json.dump(settings, f, indent=4)
 
+    logger.info(f"Running bindcraft with target_settings_path {target_settings_path}, filter_option {filter_option}, advanced_option {advanced_option}.")
+
     if filter_option == "Default":
         filter_settings_path = f"{BINDCRAFT_HOME}/settings_filters/default_filters.json"
     elif filter_option == "None":
@@ -1009,7 +1011,7 @@ def bindcraft(target_settings_path: str, filter_option: str = "Default", advance
     # save the final_df to final_csv
     final_df.to_csv(final_csv, index=False)
 
-    out_dir = design_path
+    out_dir = target_settings["design_path"]
     return [
         (out_file.relative_to(out_dir), open(out_file, "rb").read())
         for out_file in Path(out_dir).glob("**/*.*")
@@ -1024,14 +1026,14 @@ def bindcraft(target_settings_path: str, filter_option: str = "Default", advance
 #    binder_name: str = None,
 #    out_dir: str = "./out/bindcraft",
 #):
-def main(target_settings_path: str = f"{BINDCRAFT_HOME}/settings_target/PDL1.json"):
+def main(target_settings_path: str = f"{BINDCRAFT_HOME}/settings_target/EGFR.json"):
     """
     target_hotspot_residues: What positions to target in your protein of interest?
     For example 1,2-10 or chain specific A1-10,B1-20 or entire chains A.
     If left blank, an appropriate site will be selected by the pipeline.
     """
     from datetime import datetime
-
+    logger.info("Start.")
     today = datetime.now().strftime("%Y%m%d%H%M")[2:]
 
     #pdb_str = open(input_pdb_path).read()
@@ -1050,6 +1052,8 @@ def main(target_settings_path: str = f"{BINDCRAFT_HOME}/settings_target/PDL1.jso
     #)
     outputs = bindcraft(target_settings_path=target_settings_path)
 
+    out_dir = "./out/"
+
     for out_file, out_content in outputs:
         (Path(out_dir) / today / Path(out_file)).parent.mkdir(
             parents=True, exist_ok=True
@@ -1057,3 +1061,5 @@ def main(target_settings_path: str = f"{BINDCRAFT_HOME}/settings_target/PDL1.jso
         if out_content:
             with open((Path(out_dir) / today / Path(out_file)), "wb") as out:
                 out.write(out_content)
+
+    logger.info("Done.")
