@@ -66,3 +66,7 @@ db_dumps/*.json
 #####################
 params/*.npz
 params/LICENSE
+
+# logging           #
+#####################
+bindcraft.log
