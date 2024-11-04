@@ -26,6 +26,8 @@ requests = "^2.32.3"
 black = "^24.10.0"
 isort = "^5.13.2"
 ruff = "^0.7.2"
+ipython = "^8.29.0"
+polars = "^1.12.0"
 
 [tool.poetry.scripts]
 bindcraft = "bindcraft.cmd.root:main"
