@@ -64,8 +64,10 @@ db_dumps/*.json
 
 # params            #
 #####################
+params/
 params/*.npz
 params/LICENSE
+params/*.tar
 
 # logging           #
 #####################
