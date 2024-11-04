@@ -19,12 +19,13 @@ from colabdesign.af.loss import (_get_con_loss, get_dgram_bins, get_ptm,
 from colabdesign.mpnn import mk_mpnn_model
 from colabdesign.shared.utils import copy_dict
 
+from bindcraft.logger import logger
+
 from .biopython_utils import (calc_ss_percentage, calculate_clash_score,
                               hotspot_residues)
 from .generic_utils import update_failures
 from .pyrosetta_utils import align_pdbs, pr_relax
 
-from bindcraft.logger import logger
 
 # hallucinate a binder
 def binder_hallucination(
@@ -186,7 +187,9 @@ def binder_hallucination(
 
         # if best iteration has high enough confidence then continue
         if initial_plddt > 0.65:
-            logger.info("Initial trajectory pLDDT good, continuing: " + str(initial_plddt))
+            logger.info(
+                "Initial trajectory pLDDT good, continuing: " + str(initial_plddt)
+            )
             if advanced_settings["optimise_beta"]:
                 # temporarily dump model to assess secondary structure
                 af_model.save_pdb(model_pdb_path)
@@ -301,7 +304,9 @@ def binder_hallucination(
 
         else:
             update_failures(failure_csv, "Trajectory_logits_pLDDT")
-            logger.info("Initial trajectory pLDDT too low to continue: " + str(initial_plddt))
+            logger.info(
+                "Initial trajectory pLDDT too low to continue: " + str(initial_plddt)
+            )
 
     else:
         logger.info("ERROR: No valid design model selected")

@@ -1,7 +1,9 @@
 import os
 import tarfile
 from pathlib import Path
+
 import requests
+
 from bindcraft.logger import logger
 
 BINDCRAFT_HOME = os.getenv("BINDCRAFT_HOME", os.getcwd())
