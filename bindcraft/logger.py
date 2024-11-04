@@ -46,7 +46,7 @@ loguru_logger.configure(handlers=[LOGURU_HANDLER])
 
 logger = loguru_logger
 logger.add(
-    "bindcraft.log",
+    "log/bindcraft.log",
     level=LOGURU_LOG_LEVEL,
     rotation="1 day",
     compression="zip",

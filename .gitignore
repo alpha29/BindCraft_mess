@@ -72,4 +72,5 @@ params/*.tar
 
 # logging           #
 #####################
+log/
 bindcraft.log
