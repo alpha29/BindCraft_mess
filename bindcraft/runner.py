@@ -175,7 +175,7 @@ def bindcraft(target_settings_path: str, filter_option: str = "Default", advance
     filters_file = os.path.basename(filters_path).split(".")[0]
     advanced_file = os.path.basename(advanced_path).split(".")[0]
 
-    advanced_settings["af_params_dir"] = "/home/cbrown/workspace/params/"
+    advanced_settings["af_params_dir"] = f"{BINDCRAFT_HOME}/params/"
     advanced_settings["dssp_path"] = f"{BINDCRAFT_HOME}/bin/dssp"
     advanced_settings["dalphaball_path"] = f"{BINDCRAFT_HOME}/bin/DAlphaBall.gcc"
 
