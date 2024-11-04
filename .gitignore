@@ -61,6 +61,7 @@ db_dumps/*.json
 *.sqlite3
 .env*
 !.env.example
+out/
 
 # params            #
 #####################
