@@ -62,6 +62,7 @@ db_dumps/*.json
 .env*
 !.env.example
 out/
+data/out_*/
 
 # params            #
 #####################

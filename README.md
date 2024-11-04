@@ -1,4 +1,8 @@
 # BindCraft
+
+cbrown - This fork of BindCraft has been modified to run outside of Google Colab, via CLI.  This is really just [this](https://github.com/hgbrian/biomodals/blob/main/modal_bindcraft.py) with all the
+convenience of Modal removed.  details details fill me in later
+
 ![alt text](https://github.com/martinpacesa/BindCraft/blob/main/pipeline.png?raw=true)
 
 Simple binder design pipeline using AlphaFold2 backpropagation, MPNN, and PyRosetta. Select your target and let the script do the rest of the work and finish once you have enough designs to order!
@@ -10,7 +14,7 @@ First you need to clone this repository. Replace **[install_folder]** with the p
 
 `git clone https://github.com/martinpacesa/BindCraft [install_folder]`
 
-The navigate into your install folder using *cd* and run the installation code. BindCraft requires a CUDA-compatible Nvidia graphics card to run. In the *cuda* setting, please specify the CUDA version compatible with your graphics card, for example '11.8'. If unsure, leave blank but it's possible that the installation might select the wrong version, which will lead to errors. In *pkg_manager* specify whether you are using 'mamba' or 'conda', if left blank it will use 'conda' by default. 
+The navigate into your install folder using *cd* and run the installation code. BindCraft requires a CUDA-compatible Nvidia graphics card to run. In the *cuda* setting, please specify the CUDA version compatible with your graphics card, for example '11.8'. If unsure, leave blank but it's possible that the installation might select the wrong version, which will lead to errors. In *pkg_manager* specify whether you are using 'mamba' or 'conda', if left blank it will use 'conda' by default.
 
 `bash install_bindcraft.sh --cuda '12.4' --pkg_manager 'conda'`
 
@@ -51,7 +55,7 @@ cd /path/to/bindcraft/folder/
 python -u ./bindcraft.py --settings './settings_target/PDL1.json' --filters './settings_filters/default_filters.json' --advanced './settings_advanced/4stage_multimer.json'
 ```
 
-**We recommend to generate at least a 100 final designs passing all filters, then order the top 5-20 for experimental characterisation.** If high affinity binders are required, it is better to screen more, as the ipTM metric used for ranking is not a good predictor for affinity, but has been shown to be a good binary predictor of binding. 
+**We recommend to generate at least a 100 final designs passing all filters, then order the top 5-20 for experimental characterisation.** If high affinity binders are required, it is better to screen more, as the ipTM metric used for ranking is not a good predictor for affinity, but has been shown to be a good binary predictor of binding.
 
 Below are explanations for individual filters and advanced settings.
 
